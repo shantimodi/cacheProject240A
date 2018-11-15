@@ -40,13 +40,13 @@ Please make sure you do not copy a single line of code from any source.  Not fro
 
 ## Get Started
 
-As mentioned, we provide a starting framework to help you design your caches. The source code, traces, and expected output is in our github repo. You can get it with `git clone https://github.com/prodromou87/cacheProject240A.git`.
+As mentioned, we provide a starting framework to help you design your caches. The source code, traces, and expected output is in our github repo. You can get it with `git clone https://github.com/skinzer/cacheProject240A.git`.
 
-Alternatively, you can download it from [our github page](https://github.com/prodromou87/cacheProject240A.git).
+Alternatively, you can download it from [our github page](https://github.com/skinzer/cacheProject240A.git).
 
 For this project we decided to provide the correct output for the two benchmarks you are given, so you can verify your results. They can be found under the `correctOutput` directory.
 
-You have the option to write your project in C, C++ or Python. We only provide a framework written in C and we strongly recommend you use it, primarily to ensure compatibility with our autograder. 
+You have the option to write your project in C, C++ or Python. We only provide a framework written in C and we strongly recommend you use it, primarily to ensure compatibility with our autograder.
 
 If you decide to use some of the other supported languages, you will have to implement everything. You also have to make sure that running `make` in the src directory generates an executable named 'cache'. During grading, our script will run a `make clean`, followed by a `make` command. Make sure that this step is not going to delete your code, especially if you are writing it in Python. Finally, make sure that your project runs with the exact same commands as this document describes. Python submissions must run with `./cache`, without requiring `python ./cache`. You can submit a custom Makefile to serve the needs of your code.
 
@@ -64,16 +64,16 @@ docker pull prodromou87/ucsd_cse240a
 
 This command will download and build our docker image. It will take a while, but you only have to do this step once. To verify that you have the image, you can run `docker images` and check the the image is listed.
 
-Once you have it, you can start an interactive shell in Docker with 
+Once you have it, you can start an interactive shell in Docker with
 
 ```
 docker run --rm -it prodromou87/ucsd_cse240a
 
-The --rm flag will delete the running container once 
-you exit it so it doesn't keep consuming resources 
+The --rm flag will delete the running container once
+you exit it so it doesn't keep consuming resources
 from the host machine.
 
-The -it flag will start an interactive session so it's 
+The -it flag will start an interactive session so it's
 necessary if you want a shell to work with.
 ```
 
@@ -131,7 +131,7 @@ If no trace file is provided then the simulator will read in input from STDIN.
 Some of the traces we provided are rather large when uncompressed so we have
 distributed them compressed with bzip2.  If you want to run the simulator on
 a compressed trace then you can do so by doing the following:
-  
+
 `bunzip2 -kc trace.bz2 | ./cache <options>`
 
 In either case the options that can be used to change the configurations of
@@ -239,7 +239,7 @@ This means that the access time that your cache access functions will return wil
 
 All grading will be done with respect to your simulator's cache statistics over
 a wide range of input parameters. This means that you should make sure
-that your simulator works for the various corner cases that exist. We will use four benchmarks for testing, none of which is provided in the github repo. 
+that your simulator works for the various corner cases that exist. We will use four benchmarks for testing, none of which is provided in the github repo.
 
 You should do most of the development on your own machine. If you face any issues when you submit your project in gradescope, try to run your project in our Docker image to ensure compatibility with the autograder, or post the error message in Piazza.
 
@@ -249,7 +249,7 @@ The autograder is designed to test your simulator (loosely-)based on real hardwa
 
 **NOTE:** Reference manuals are a wealth of information. They usually describe the architecture in extreme detail, provide diagrams and illustrations, electrical details, interface details and a lot more. However, they are much harder to read and understand than research papers, because their target audience is expected to have expert-level understanding of the subjects described. For those of you interested to learn how real processors are designed, this is the place to find everything you need.
 
-1. **Intel Pentium III** - [Reference Manual](http://download.intel.com/design/PentiumIII/datashts/24526408.pdf): 
+1. **Intel Pentium III** - [Reference Manual](http://download.intel.com/design/PentiumIII/datashts/24526408.pdf):
    * I$: 16KB, direct-mapped, 2 cycles hit latency
    * D$: 16KB, direct-mapped, 2 cycles hit latency
    * L2: 256KB, 8-way, on-chip, 10 cycles hit latency, inclusive
@@ -290,7 +290,7 @@ In the autograder we will be using four benchmarks, all different from those pro
 **Note:** Running all the test cases in gradescope takes about 8-10 minutes (for our implementation). Be patient when you submit code. Also, try to write somewhat efficient code because gradescope has a 20-minute limit on execution time.
 
 **Grading Breakdown:**
-* The project's maximum grade is 100. 
+* The project's maximum grade is 100.
 * Each of the above 5 machines (test cases) has a 20% weight on the final grade. In other words, if only the Alpha cache is correct (and the others get 0 points), your project score will be 20/100.
 * For each test case (Intel, Arm, MIPS, Alpha, BTCMiner):
   - The autograder runs the 4 benchmarks described earlier. Each benchmark has equal weight.
@@ -300,9 +300,7 @@ In the autograder we will be using four benchmarks, all different from those pro
 
 ## Turn-in instructions
 
-**DUE: June 5 2018 - Submissions after 11:59:59 PM are considered late**
-
-Late projects are allowed for at most 3 days after the project due date.  For each day late a 10% grade penalty is automatically attached (e.g. 3 days late = 30% penalty).  After 3 days, missing projects will recieve a zero.  A project is considered late at 12:00:01 AM (Which is 1 second past Midnight).
+**DUE: November 28 2018 - Submissions after 11:59:59 PM are considered late**
 
 You can submit zipped (.zip) submissions, or individual files through gradescope's submission interface. If you submit zipped submissions, make sure that your source files (*.h, *.c, Makefile) are laid out at the root of the compressed file. In other words do not compress a directory. Compressed directories will fail the autograder's compatibility tests. It will be more straightforward if you simply submit files individually.
 
