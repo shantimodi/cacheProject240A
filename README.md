@@ -300,7 +300,7 @@ In the autograder we will be using four benchmarks, all different from those pro
 
 ## Turn-in instructions
 
-**DUE: November 28 2018 - Submissions after 11:59:59 PM are considered late**
+**DUE: December 03 2018 - Submissions after 11:59:59 PM are considered late**
 
 You can submit zipped (.zip) submissions, or individual files through gradescope's submission interface. If you submit zipped submissions, make sure that your source files (*.h, *.c, Makefile) are laid out at the root of the compressed file. In other words do not compress a directory. Compressed directories will fail the autograder's compatibility tests. It will be more straightforward if you simply submit files individually.
 
