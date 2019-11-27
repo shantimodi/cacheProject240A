@@ -71,7 +71,8 @@ typedef struct set_queue
 
 void add_block_to_front(set_queue* current_set, block *hit_block)
 {
-	if(current_set->set_front_block!=NULL && current_set->set_rear_block!=NULL)
+//	printf("and is add_block_to_front this selected?");
+	if(current_set->set_front_block==NULL && current_set->set_rear_block==NULL)
 	{
 		current_set->set_front_block = hit_block;
 		current_set->set_rear_block = hit_block;
@@ -79,8 +80,10 @@ void add_block_to_front(set_queue* current_set, block *hit_block)
 	else
 	{
 		hit_block->next_block = current_set->set_front_block;
-		hit_block->prev_block = hit_block;
+		hit_block->prev_block = NULL;
+		hit_block->next_block->prev_block = hit_block;
 		current_set->set_front_block = hit_block;
+		
 	}
 }
 
@@ -90,27 +93,37 @@ void bring_block_to_front(set_queue* current_set, block *hit_block)
 		return;
 	if(hit_block == current_set->set_rear_block)
 	{
+//		printf("\nis it rear?");
 		current_set->set_rear_block = current_set->set_rear_block->prev_block;
 		current_set->set_rear_block->next_block = NULL;
 	}
 	else
 	{
+//		printf("\n is it in middle?");
+//		printf("\n hit_block->tag = %d", hit_block->tag);
+//		printf("\nhit_block->prev_block=%d",hit_block->prev_block->tag);
+//		printf("\nhit_block->next_block=%d",hit_block->next_block->tag);
 		hit_block->prev_block->next_block = hit_block->next_block;
+//		printf("\nhit_block->next_block=%d",hit_block->next_block->tag);
+//		printf("\nhit_block->prev_block=%d",hit_block->prev_block->tag);
 		hit_block->next_block->prev_block = hit_block->prev_block;
 	}
+//	printf("\nfinal values=%d,%d",current_set->set_front_block->tag,current_set->set_front_block->next_block->tag);
 	hit_block->next_block = current_set->set_front_block;
 	hit_block->prev_block = NULL;
 	current_set->set_front_block->prev_block = hit_block;
 	current_set->set_front_block = hit_block;
+//	printf("\nfinal values=%d,%d,%d",current_set->set_front_block->tag,current_set->set_front_block->next_block->tag, current_set->set_front_block->next_block->next_block->tag);
 }
 
 void free_rear_block(set_queue* current_set)
 {
+	printf("is this selected");
 	if(current_set->set_rear_block==NULL)
 		return;
 	if(current_set->set_front_block == current_set->set_rear_block)
 	{
-		printf("tu ne");
+//		printf("tu ne");
 		free(current_set->set_front_block);
 		current_set->set_front_block = NULL;
 		current_set->set_rear_block = NULL;
@@ -120,7 +133,7 @@ void free_rear_block(set_queue* current_set)
 		block *temp = current_set->set_rear_block;
 		current_set->set_rear_block = current_set->set_rear_block->prev_block;
 		current_set->set_rear_block->next_block = NULL;
-		printf("mari entriya");
+//		printf("mari entriya");
 		free(temp);
 	}
 }
@@ -219,7 +232,7 @@ icache_access(uint32_t addr)
   //
   uint32_t tag;
   uint8_t icachehit = 0;
-  uint8_t i = 0;
+  uint8_t i = 0x10;
   uint32_t l2_access_penalty = 0;
   
   if(icacheSets==0)
@@ -230,38 +243,63 @@ icache_access(uint32_t addr)
   
   
   tag = addr >> (block_offset_bits + icache_index_bits);
+//  printf("\n*****************first access starts********");
+//  printf("\n address = %d",addr);
+ // printf("\n icache_tag = %d", tag);
   icache_current_index = (addr & mask_icache_set) >> block_offset_bits;
   block *temp = icache[icache_current_index].set_front_block;
   
+//  if(temp!=NULL)
+//	  printf("\n icache[icache_current_index].set_front_block->tag = %d", icache[icache_current_index].set_front_block->tag);
+  
   for(i=0; (i<icacheAssoc) && (temp!= NULL); i++)
   {
+//	printf("\n temp->tag =%d",temp->tag);
 	if(temp->tag == tag)
 	{
 		icachehit = 1;
+//	    printf("\n icachehit=%d",icachehit);
 		break;
 	}
 	temp = temp->next_block;
   }
-  
+//  printf("\n*****************iteration ends********");
+//  printf("\ni value = %d",i);
+
   switch(icachehit)
   {
-	  case 0://icache_miss
+	  case 0:
+	  case 0x10: //icache_miss
 		l2_access_penalty = l2cache_access(addr);
-        if(i == (icacheAssoc-1))
+        if(i == (icacheAssoc))
+		{
+//			printf("and is this selected?");
 			free_rear_block(&icache[icache_current_index]);
+		}
 		block *new_icache_block = malloc(sizeof(block));
 		new_icache_block->tag = tag;
 		add_block_to_front(&icache[icache_current_index], new_icache_block);
+//		temp = icache[icache_current_index].set_front_block;
+  
+//		if(temp!=NULL)
+//			printf("\n icache[icache_current_index].set_front_block->tag = %d", icache[icache_current_index].set_front_block->tag);
+  
+/*		for(i=0; (i<icacheAssoc) && (temp!= NULL); i++)
+        {
+			printf("\n temp->tag =%d",temp->tag);
+			temp = temp->next_block;
+		}
+*/		
 		icachePenalties+=l2_access_penalty;
 		icacheMisses++;       
-		printf("re dil re");		
+//		printf("re dil re");		
 //		free(temp);
 		return icacheHitTime + l2_access_penalty;
 		break;
 	  
 	  case 1://icache_hit
 		bring_block_to_front(&icache[icache_current_index], temp);
-		printf("dil mein baji");
+//		printf("dil mein baji");
 //		free(temp);
 		return icacheHitTime;
 		break;
@@ -309,21 +347,21 @@ dcache_access(uint32_t addr)
   {
 	  case 0://dcache_miss
 		l2_access_penalty = l2cache_access(addr);
-        if(i == (dcacheAssoc-1))
+        if(i == (dcacheAssoc))
 			free_rear_block(&dcache[dcache_current_index]);
 		block *new_dcache_block = malloc(sizeof(block));
 		new_dcache_block->tag = tag;
 		add_block_to_front(&dcache[dcache_current_index], new_dcache_block);
 		dcachePenalties+=l2_access_penalty;
 		dcacheMisses++;
-		printf("ghantiya re");
+//		printf("ghantiya re");
 //		free(temp);        
 		return dcacheHitTime + l2_access_penalty;
 		break;
 	  
 	  case 1://dcache_hit
 		bring_block_to_front(&dcache[dcache_current_index], temp);
-		printf("tun tun");
+//		printf("tun tun");
 //		free(temp);		
 		return dcacheHitTime;
 		break;
@@ -341,7 +379,7 @@ l2cache_access(uint32_t addr)
   //
   //TODO: Implement L2$
   //
-  
+/*  
   uint32_t tag;
   uint8_t i =0;
   uint8_t l2cachehit =0;
@@ -358,6 +396,9 @@ l2cache_access(uint32_t addr)
   l2cache_current_index = (addr & mask_l2cache_set) >> block_offset_bits;
   block *temp = l2cache[l2cache_current_index].set_front_block;
   
+  if(temp!=NULL)
+  printf("\n temp->tag = %d",temp->tag); 
+  
   for(i=0; (i<l2cacheAssoc) && (temp!= NULL); i++)
   {
 	if(temp->tag == tag)
@@ -366,29 +407,36 @@ l2cache_access(uint32_t addr)
 		break;
 	}
 	temp = temp->next_block;
+	printf("\n iteration value i=%d",i);
+	printf("\n temp->tag = %d",temp->tag); 
   }
+  
+  printf("\n-------------------------");
   
   switch(l2cachehit)
   {
 	  case 0://l2cache_miss
         if(i == (l2cacheAssoc-1))
+		{
+			printf("\n i value =%d",i);
 			free_rear_block(&l2cache[l2cache_current_index]);
+		}
 		block *new_l2cache_block = malloc(sizeof(block));
 		new_l2cache_block->tag = tag;
 		add_block_to_front(&l2cache[l2cache_current_index], new_l2cache_block);
 		l2cacheMisses++;
 		l2cachePenalties+= memspeed;
-		printf("uski sun");
+		printf("\n uski sun");
 //		free(temp);
 		return l2cacheHitTime + memspeed;
 		break;
 	  
 	  case 1://l2cache_hit       
 		bring_block_to_front(&l2cache[l2cache_current_index], temp);
-		printf("commentriyare");
+//		printf("commentriyare");
 //		free(temp);
 		return l2cacheHitTime;
 		break;
-  }  
+  }  */
   return memspeed;
 }
